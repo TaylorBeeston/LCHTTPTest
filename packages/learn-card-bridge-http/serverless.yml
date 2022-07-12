@@ -1,0 +1,41 @@
+# serverless.yml
+
+service: learn-card-http-bridge
+
+plugins:
+  - serverless-esbuild
+
+custom:
+  esbuild:
+    packager: pnpm
+    plugins: esbuildWasmPlugin.cjs
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: dev
+  region: us-east-1
+  timeout: 30
+  httpApi:
+    cors: true
+
+functions:
+  api:
+    handler: lambda.handler
+    memorySize: 2048
+    events:
+      - httpApi: 'GET /'
+      - httpApi: 'GET /credentials'
+      - httpApi: 'GET /credentials/{id}'
+      - httpApi: 'DELETE /credentials/{id}'
+      - httpApi: 'POST /credentials/issue'
+      - httpApi: 'POST /credentials/status'
+      - httpApi: 'POST /credentials/verify'
+      - httpApi: 'POST /credentials/derive'
+      - httpApi: 'POST /presentations/verify'
+      - httpApi: 'POST /presentations/prove'
+      - httpApi: 'GET /presentations'
+      - httpApi: 'GET /presentations/{id}'
+      - httpApi: 'DELETE /presentations/{id}'
+      - httpApi: 'POST /exchanges/{exchangeId}'
+      - httpApi: 'POST /exchanges/{exchangeId}/{transactionId}'
